@@ -1,4 +1,7 @@
 ---
+import { AstroComponent } from 'astro';
+import Analytics from '@vercel/analytics/astro';
+
 interface Props {
   title: string;
 }
@@ -15,6 +18,7 @@ const { title } = Astro.props;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
+    <link rel="stylesheet" href="/styles.css">
   </head>
   <body class="bg-gray-50">
     <header class="bg-gray-900 text-white">
@@ -42,6 +46,7 @@ const { title } = Astro.props;
         <p>&copy; {new Date().getFullYear()} Dev Elevate. All rights reserved.</p>
       </div>
     </footer>
+    <Analytics />
   </body>
 </html>
 
