@@ -1,0 +1,62 @@
+---
+interface Props {
+  title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Dev Elevate - A Technical Blog for Developers" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="bg-gray-50">
+    <header class="bg-gray-900 text-white">
+      <nav class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+          <a href="/" class="text-2xl font-bold">&lt;/&gt; Dev Elevate</a>
+          <div class="hidden md:flex space-x-8">
+            <a href="/dsa" class="hover:text-green-400">DSA</a>
+            <a href="/web-dev" class="hover:text-green-400">Web Dev</a>
+            <a href="/system-design" class="hover:text-green-400">System Design</a>
+            <a href="/oops" class="hover:text-green-400">OOP</a>
+            <a href="/machine-learning" class="hover:text-green-400">Machine Learning</a>
+            <a href="/contact" class="hover:text-green-400">Contact</a>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="bg-gray-900 text-white mt-16">
+      <div class="max-w-7xl mx-auto px-4 py-8 text-center">
+        <p>&copy; {new Date().getFullYear()} Dev Elevate. All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  :root {
+    --accent: 136, 58, 234;
+    --accent-light: 224, 204, 250;
+    --accent-dark: 49, 10, 101;
+  }
+  html {
+    font-family: system-ui, sans-serif;
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    padding: 0;
+  }
+</style>
