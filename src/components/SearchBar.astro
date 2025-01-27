@@ -10,39 +10,47 @@
   <div id="searchResults" class="mt-4 space-y-4"></div>
 </div>
 
-<script>
-  const searchInput = document.getElementById('searchInput');
-  const searchResults = document.getElementById('searchResults');
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
 
-  searchInput?.addEventListener('input', async (e) => {
-    const query = (e.target as HTMLInputElement).value.toLowerCase();
-    if (query.length < 2) {
-      searchResults!.innerHTML = '';
-      return;
-    }
+    if (searchInput && searchResults) {
+      searchInput.addEventListener('input', async (e) => {
+        try {
+          const query = e.target.value.toLowerCase();
+          if (query.length < 2) {
+            searchResults.innerHTML = '';
+            return;
+          }
 
-    try {
-      const response = await fetch('/api/search.json');
-      const posts = await response.json();
-      
-      const filteredPosts = posts.filter((post: any) => 
-        post.title.toLowerCase().includes(query) || 
-        post.description.toLowerCase().includes(query) ||
-        post.tags.some((tag: string) => tag.toLowerCase().includes(query))
-      );
+          const response = await fetch('/api/search.json');
+          if (!response.ok) {
+            throw new Error('Failed to fetch search results');
+          }
 
-      searchResults!.innerHTML = filteredPosts.length ? 
-        filteredPosts.map((post: any) => `
-          <a href="/blog/${post.slug}" class="block">
-            <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
-              <h3 class="text-lg font-semibold mb-2">${post.title}</h3>
-              <p class="text-gray-600 text-sm">${post.description}</p>
-            </div>
-          </a>
-        `).join('') :
-        '<p class="text-gray-500">No results found</p>';
-    } catch (error) {
-      console.error('Error fetching search results:', error);
+          const posts = await response.json();
+          const filteredPosts = posts.filter((post) => 
+            post.title.toLowerCase().includes(query) || 
+            post.description.toLowerCase().includes(query) ||
+            post.tags.some((tag) => tag.toLowerCase().includes(query))
+          );
+
+          searchResults.innerHTML = filteredPosts.length ? 
+            filteredPosts.map((post) => `
+              <a href="/blog/${post.slug}" class="block">
+                <div class="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+                  <h3 class="text-lg font-semibold mb-2">${post.title}</h3>
+                  <p class="text-gray-600 text-sm">${post.description}</p>
+                </div>
+              </a>
+            `).join('') :
+            '<p class="text-gray-500">No results found</p>';
+        } catch (error) {
+          console.error('Error fetching search results:', error);
+          searchResults.innerHTML = '<p class="text-red-500">Error loading search results</p>';
+        }
+      });
     }
   });
 </script>

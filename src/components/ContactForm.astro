@@ -1,4 +1,5 @@
 ---
+import { supabase } from '../lib/supabase';
 ---
 <div class="max-w-4xl mx-auto px-4 py-16">
   <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Contact Us</h2>
@@ -39,14 +40,46 @@
   </form>
 </div>
 
-<script>
-  const contactForm = document.getElementById('contactForm');
-  contactForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const contactForm = document.getElementById('contactForm');
     
-    // Here you would typically send this to your backend
-    alert('Thanks for your message! We\'ll get back to you soon.');
-    (e.target as HTMLFormElement).reset();
+    contactForm?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const submitButton = form.querySelector('button[type="submit"]');
+      
+      try {
+        submitButton.disabled = true;
+        submitButton.textContent = 'Sending...';
+        
+        const formData = {
+          name: form.querySelector('#name').value,
+          email: form.querySelector('#email').value,
+          message: form.querySelector('#message').value
+        };
+
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to send message');
+        }
+
+        form.reset();
+        alert('Thanks for your message! We\'ll get back to you soon.');
+      } catch (error) {
+        console.error('Error sending message:', error);
+        alert('Failed to send message. Please try again.');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = 'Send Message';
+      }
+    });
   });
 </script>
